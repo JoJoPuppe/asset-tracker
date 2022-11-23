@@ -1,64 +1,61 @@
 <template>
-  <div>
-    <p>{{ list }}</p>
-    <h3 class="font-bold text-3xl">Draggable {{ draggingInfo }}</h3>
-    <draggable
-      :list="list"
-      :disabled="!enabled"
-      item-key="name"
-      class="list-group"
-      ghost-class="ghost"
-      :move="checkMove"
-      @start="dragging = true"
-      @end="dragging = false"
-    >
-      <template #item="{ element }">
-        <ItemFile
-          :item-name="{ element }"
-          :class="{ 'not-draggable': !enabled }"
-        />
-      </template>
-    </draggable>
+  <div class="drawer drawer-end">
+    <input
+      id="my-drawer-4"
+      type="checkbox"
+      class="drawer-toggle"
+      v-model="checked"
+    />
+
+    <div class="drawer-content">
+      <p>{{ list }}</p>
+      <nestedDraggable :tasks="list" />
+    </div>
+    <div class="drawer-side">
+      <label for="my-drawer-4" class="drawer-overlay"></label>
+      <ul class="menu p-4 w-80 bg-base-100 text-base-content">
+        <!-- Sidebar content here -->
+        <li>
+          <a>{{ more }}</a>
+        </li>
+        <li><a>Sidebar Item 2</a></li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
-import ItemFile from "./components/item_file.vue";
-let id = 1;
+import { useTrackerStore } from "./stores/tracker_store";
+import { useMoreStore } from "./stores/more_store";
+import { ref } from "vue";
+import nestedDraggable from "./components/nested_drag.vue";
+
 export default {
-  name: "simple",
-  display: "Simple",
-  order: 0,
   components: {
-    draggable,
-    ItemFile,
+    nestedDraggable,
   },
-  data() {
+  setup() {
+    const store = useTrackerStore();
+    const more_store = useMoreStore();
     return {
-      enabled: true,
-      list: [
-        { name: "John", id: 0 },
-        { name: "Joao", id: 1 },
-        { name: "Jean", id: 2 },
-      ],
-      dragging: false,
+      store,
+      more_store,
     };
   },
   computed: {
-    draggingInfo() {
-      return this.dragging ? "under drag" : "";
+    list() {
+      return this.store.list;
     },
-  },
-  methods: {
-    add: function () {
-      this.list.push({ name: "Juan " + id, id: id++ });
+    checked: {
+      get() {
+        return this.more_store.more;
+      },
+      set(value) {
+        this.more_store.more = value;
+      },
     },
-    replace: function () {
-      this.list = [{ name: "Edgard", id: id++ }];
-    },
-    checkMove: function (e) {
-      window.console.log("Future index: " + e.draggedContext.futureIndex);
+    more() {
+      return this.more_store.item_name;
     },
   },
 };
