@@ -53,9 +53,17 @@ export const useTrackerStore = defineStore("tracker", {
     ],
   }),
   actions: {
-    add_item(data){
-      this.list.push({name: data.name, type: "item", id: data._id, tasks: []})
-    }
+    add_item(data) {
+      this.list.push({
+        name: data.name,
+        type: "item",
+        id: data._id,
+        tasks: [],
+      });
+    },
 
+    fill_store(data) {
+      this.list = data;
+    },
   },
 });
