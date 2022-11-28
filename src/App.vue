@@ -13,13 +13,9 @@
     </div>
     <div class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>
-      <ul class="menu p-4 w-80 bg-base-100 text-base-content">
-        <!-- Sidebar content here -->
-        <li>
-          <a>{{ more }}</a>
-        </li>
-        <li><a>Sidebar Item 2</a></li>
-      </ul>
+      <div class="menu p-4 w-80 bg-base-100 text-base-content">
+          <SideBarContent :item-data="more"/>
+      </div>
     </div>
   </div>
   <input type="checkbox" id="my-modal-3" class="modal-toggle" />
@@ -38,11 +34,13 @@ import { useMoreStore } from "./stores/more_store";
 import { ref } from "vue";
 import nestedDraggable from "./components/nested_drag.vue";
 import ItemForm from "./components/add_item.vue";
+import SideBarContent from "./components/side_bar_content.vue";
 
 export default {
   components: {
     nestedDraggable,
     ItemForm,
+    SideBarContent,
   },
   setup() {
     const store = useTrackerStore();
@@ -71,7 +69,7 @@ export default {
       },
     },
     more() {
-      return this.more_store.item_name;
+      return this.more_store.item;
     },
   },
 };

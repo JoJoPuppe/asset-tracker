@@ -4,7 +4,7 @@
       <DocumentIcon
         class="flex-inital py-2 px-1 w-12 h-full border-r-8 border-primary text-primary"
       />
-      <p class="">{{ itemName.element.name }}</p>
+      <p class="">{{ item.element.name }}</p>
       <ChevronRightIcon
         class="w-8 h-8 p-2 m-1 hover:text-secondary"
         :class="{ 'rotate-90': isOpen }"
@@ -16,7 +16,7 @@
           tabindex="0"
           class="menu dropdown-content p-2 shadow bg-base-100 border border-primary rounded-box w-52 mt-4"
         >
-          <li><a @click="get_more(itemName.element.name)">More</a></li>
+          <li><a @click="get_more(item.element.id)">More</a></li>
           <li><a>Delete</a></li>
         </ul>
       </div>
@@ -38,7 +38,8 @@ import { useMoreStore } from "../stores/more_store";
 import { DocumentIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
 import { Collapse } from "vue-collapsed";
 import ItemDetails from "./item_details.vue";
-const props = defineProps(["itemName"]);
+import axios from "axios";
+const props = defineProps(["item"]);
 
 const store = useMoreStore();
 const isOpen = ref(false); // Initial value
@@ -47,9 +48,12 @@ function handleCollapse() {
   isOpen.value = !isOpen.value;
 }
 
-function get_more(item_name) {
-  store.item_name = item_name;
-  store.more = true;
+function get_more(item_id) {
+  axios.get("http://localhost:8000/itemfile/" + item_id).then((response) => {
+      store.cache_item(response.data);
+      store.more = true;
+    console.log(response.data)
+  })
 }
 </script>
 

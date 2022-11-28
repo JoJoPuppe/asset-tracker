@@ -11,7 +11,7 @@
         <ItemFolder v-if="element.type === 'folder'" :item-name="{ element }">
           <nested-draggable :tasks="element.tasks" />
         </ItemFolder>
-        <ItemFile v-else :item-name="{ element }" />
+        <ItemFile v-else :item="{ element }" />
       </li>
     </template>
   </draggable>
