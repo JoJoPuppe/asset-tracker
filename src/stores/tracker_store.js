@@ -11,5 +11,12 @@ export const useTrackerStore = defineStore("tracker", {
     fill_store(data) {
       this.list = data;
     },
+    update_item(data) {
+      for (let i = 0; i < this.list.length; i++) {
+        if (this.list[i]._id == data._id) {
+          this.list[i] = data;
+        }
+      }
+    },
   },
 });

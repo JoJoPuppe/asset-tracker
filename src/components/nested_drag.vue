@@ -15,16 +15,21 @@
       </li>
     </template>
   </draggable>
-  <input type="checkbox" id="my-modal-item" class="modal-toggle" />
+  <input
+    type="checkbox"
+    id="modal-update-item"
+    class="modal-toggle"
+    v-model="checked"
+  />
   <div class="modal">
     <div class="modal-box relative">
       <label
-        for="my-modal-item"
+        for="modal-update-item"
         class="btn btn-sm btn-circle absolute right-2 top-2"
         >✕</label
       >
       <h3 class="text-lg font-bold">Add Item</h3>
-      <ItemForm :prj_id="$route.params.id"/>
+      <ItemForm :item="item" />
     </div>
   </div>
 </template>
@@ -32,6 +37,7 @@
 import draggable from "vuedraggable";
 import ItemFile from "./item_file.vue";
 import ItemFolder from "./item_folder.vue";
+import ItemForm from "./add_item.vue";
 export default {
   props: {
     children: {
@@ -39,16 +45,23 @@ export default {
       type: Array,
     },
   },
+  data() {
+    return {
+      checked: false,
+      item: {},
+    };
+  },
   methods: {
-    update_item(item){
-      console.log(item)
-    }
-
+    update_item(item) {
+      this.checked = true;
+      this.item = item.element;
+    },
   },
   components: {
     draggable,
     ItemFile,
     ItemFolder,
+    ItemForm,
   },
   name: "nestedDraggable",
 };

@@ -55,7 +55,8 @@
     placeholder="Type here"
     class="input input-bordered w-full max-w-xs"
   />
-  <button @click="addItem" class="btn">add item</button>
+  <button v-if="item" @click="updateItem" class="btn">update item</button>
+  <button v-else @click="addItem" class="btn">add item</button>
 </template>
 
 <script>
@@ -63,7 +64,7 @@ import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
 
 export default {
-  props: ['prj_id'],
+  props: ["prj_id", "item"],
   setup() {
     const store = useTrackerStore();
     return {
@@ -77,10 +78,26 @@ export default {
       operator: "",
       comment: "",
       file_name: "test_v01.txt",
-      file_type: ""
+      file_type: "",
     };
   },
+  watch: {
+    item: function (val, oldVal) {
+      if (val._id) {
+        this.fill_fields();
+      }
+    },
+  },
   methods: {
+    fill_fields() {
+      this.item_name = this.item.name;
+      this.path = this.item.path;
+      this.file_name = this.item.file_name;
+      this.project_id = this.item.project_id;
+      this.file_type = this.item.file_type;
+      this.operator = this.item.operator;
+      this.comment = this.item.comment;
+    },
     addItem() {
       let payload = {
         path: this.path,
@@ -100,6 +117,32 @@ export default {
         })
         .then((response) => {
           this.store.add_item(response.data);
+          console.log(response.data);
+        });
+    },
+    updateItem() {
+      let payload = {
+        path: this.path,
+        name: this.item_name,
+        file_name: this.file_name,
+        status: 0,
+        project_id: this.prj_id,
+        file_type: this.file_type,
+        operator: this.operator,
+        comment: this.comment,
+      };
+      axios
+        .put(
+          "http://localhost:8000/itemfile/" + this.item._id,
+          JSON.stringify(payload),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          this.store.update_item(response.data);
           console.log(response.data);
         });
     },
