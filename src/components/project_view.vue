@@ -1,37 +1,53 @@
 <template>
-  <div class="drawer drawer-end">
-    <input
-      id="my-drawer-4"
-      type="checkbox"
-      class="drawer-toggle"
-      v-model="checked"
-    />
+        <div class="bg-primary h-16 flex justify-between items-center p-4">
+          <p class="font-bold text-3xl">{{ $route.params.id }}</p>
+          <div class="mx-2">
+          <label for="my-modal-item" class="btn btn-accent mx-2">add item</label>
+          <label for="my-modal-folder" class="btn btn-secondary mx-2">add folder</label>
+          </div>
+        </div>
+    <div class="drawer drawer-end">
+      <input
+        id="my-drawer-4"
+        type="checkbox"
+        class="drawer-toggle"
+        v-model="checked"
+      />
 
-    <div class="drawer-content">
-      <h1>{{ $route.params.id }}</h1>
-      <p>hellllloooooo</p>
-      <label for="my-modal-3" class="btn">add item</label>
-      <nestedDraggable :tasks="list" />
-    </div>
-    <div class="drawer-side">
-      <label for="my-drawer-4" class="drawer-overlay"></label>
-      <div class="menu p-4 w-80 bg-base-100 text-base-content">
-        <SideBarContent :item-data="more" />
+      <div class="drawer-content m-8">
+        <nestedDraggable :children="list" />
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-4" class="drawer-overlay"></label>
+        <div class="menu p-4 w-80 bg-base-100 text-base-content">
+          <SideBarContent :item-data="more" />
+        </div>
       </div>
     </div>
-  </div>
-  <input type="checkbox" id="my-modal-3" class="modal-toggle" />
-  <div class="modal">
-    <div class="modal-box relative">
-      <label
-        for="my-modal-3"
-        class="btn btn-sm btn-circle absolute right-2 top-2"
-        >✕</label
-      >
-      <h3 class="text-lg font-bold">Congratulations random Internet user!</h3>
-      <ItemForm />
+    <input type="checkbox" id="my-modal-item" class="modal-toggle" />
+    <div class="modal">
+      <div class="modal-box relative">
+        <label
+          for="my-modal-item"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕</label
+        >
+        <h3 class="text-lg font-bold">Add Item</h3>
+        <ItemForm :prj_id="$route.params.id"/>
+      </div>
     </div>
-  </div>
+    <input type="checkbox" id="my-modal-folder" class="modal-toggle" />
+    <div class="modal">
+      <div class="modal-box relative">
+        <label
+          for="my-modal-folder"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕</label
+        >
+        <h3 class="text-lg font-bold">Add Folder</h3>
+        <FolderForm :prj_id="$route.params.id"/>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -40,6 +56,7 @@ import { useMoreStore } from "../stores/more_store";
 import { ref } from "vue";
 import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
+import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
 import axios from "axios";
 
@@ -48,6 +65,7 @@ export default {
     nestedDraggable,
     ItemForm,
     SideBarContent,
+    FolderForm,
   },
   setup() {
     const store = useTrackerStore();
@@ -66,8 +84,8 @@ export default {
       axios
         .get("http://localhost:8000/" + this.$route.params.id)
         .then((response) => {
-          this.store.fill_store(JSON.parse(response.data));
           console.log(response.data);
+          this.store.fill_store(JSON.parse(response.data));
         });
     },
   },

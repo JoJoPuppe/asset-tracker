@@ -63,6 +63,7 @@ import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
 
 export default {
+  props: ['prj_id'],
   setup() {
     const store = useTrackerStore();
     return {
@@ -76,8 +77,7 @@ export default {
       operator: "",
       comment: "",
       file_name: "test_v01.txt",
-      file_type: "",
-      prj_id: "6384852d0c33ee020ce77fd2",
+      file_type: ""
     };
   },
   methods: {

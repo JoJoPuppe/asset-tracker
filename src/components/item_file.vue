@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-box border-2 border-primary m-4">
+  <div class="rounded-box border-2 border-primary m-2">
     <div class="flex justify-between items-center">
       <DocumentIcon
         class="flex-inital py-2 px-1 w-12 h-full border-r-8 border-primary text-primary"
@@ -11,12 +11,13 @@
         @click="handleCollapse"
       />
       <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost rounded-btn">Dropdown</label>
+        <label tabindex="0" class="btn btn-ghost rounded-btn">more</label>
         <ul
           tabindex="0"
           class="menu dropdown-content p-2 shadow bg-base-100 border border-primary rounded-box w-52 mt-4"
         >
-          <li><a @click="get_more(item.element.id)">More</a></li>
+          <li><a @click="get_more(item.element._id)">More</a></li>
+          <li><a @click="$emit('updateItem', item.element)">Update</a></li>
           <li><a>Delete</a></li>
         </ul>
       </div>
@@ -52,7 +53,6 @@ function get_more(item_id) {
   axios.get("http://localhost:8000/itemfile/" + item_id).then((response) => {
       store.cache_item(response.data);
       store.more = true;
-    console.log(response.data)
   })
 }
 </script>

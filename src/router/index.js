@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ProjectView from "../components/project_view.vue";
 import Folder from "../components/item_folder.vue";
+import ProjectLink from "../components/unique_project_link.vue";
+import HomePage from "../components/homepage.vue";
 const routes = [
   {
     path: "/",
-    name: "create",
-    component: ProjectView,
+    component: HomePage,
   },
   {
     path: "/prj/:id",
@@ -13,9 +14,9 @@ const routes = [
     component: ProjectView,
   },
   {
-    path: "/test",
-    name: "test",
-    component: Folder,
+    path: "/project_link/:id",
+    name: "project_link",
+    component: ProjectLink,
   },
 ];
 const router = createRouter({
