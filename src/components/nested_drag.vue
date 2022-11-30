@@ -4,14 +4,21 @@
     :list="children"
     tag="ul"
     :group="{ name: 'g1' }"
+    handle=".handle"
     item-key="_id"
   >
     <template #item="{ element }">
       <li>
+        <div class="w-12 h-12 relative handle -mr-12 cursor-move"></div>
         <ItemFolder v-if="element.item_type === 'folder'" :item="{ element }">
           <nested-draggable :children="element.children" />
         </ItemFolder>
-        <ItemFile @new-version="new_version" @update-item="update_item" v-else :item="{ element }" />
+        <ItemFile
+          @new-version="new_version"
+          @update-item="update_item"
+          v-else
+          :item="{ element }"
+        />
       </li>
     </template>
   </draggable>
@@ -24,9 +31,15 @@
   <div class="modal">
     <div class="modal-box">
       <h3 class="text-lg font-bold font-slate-600">Add/Change Item</h3>
-      <ItemForm :item="item" :type="type" />
+      <ItemForm
+        @close-modal="checked_update = !checked_update"
+        :item="item"
+        :type="type"
+      />
       <div class="modal-action">
-        <button @click="checked_update=!checked_update" class="btn">close</button>
+        <button @click="checked_update = !checked_update" class="btn">
+          close
+        </button>
       </div>
     </div>
   </div>
@@ -54,12 +67,12 @@ export default {
     update_item(item) {
       this.checked_update = true;
       this.item = item.element;
-      this.type = 'update';
+      this.type = "update";
     },
     new_version(item) {
       this.checked_update = true;
       this.item = item.element;
-      this.type = 'version'
+      this.type = "version";
     },
   },
   components: {
@@ -75,5 +88,9 @@ export default {
 .dragArea {
   min-height: 50px;
   padding: 0 0 0 0px;
+}
+
+.handle {
+  float: left;
 }
 </style>

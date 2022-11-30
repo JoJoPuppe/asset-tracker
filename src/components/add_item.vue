@@ -56,8 +56,12 @@
       placeholder="Type here"
       class="input input-bordered w-full max-w-xs"
     />
-    <button v-if="type === 'update'" @click="updateItem" class="btn">update item</button>
-    <button v-else-if="type === 'version'" @click="newVersion" class="btn">new version</button>
+    <button v-if="type === 'update'" @click="updateItem" class="btn">
+      update item
+    </button>
+    <button v-else-if="type === 'version'" @click="newVersion" class="btn">
+      new version
+    </button>
     <button v-else @click="addItem" class="btn">add item</button>
   </div>
 </template>
@@ -88,7 +92,7 @@ export default {
   },
   watch: {
     type: function (val, oldVal) {
-      if (val === 'update' || val === 'version') {
+      if (val === "update" || val === "version") {
         this.fill_fields();
       }
     },
@@ -125,6 +129,7 @@ export default {
         })
         .then((response) => {
           this.store.add_item(response.data);
+          this.$emit("closeModal");
         });
     },
     updateItem() {
@@ -150,10 +155,11 @@ export default {
         )
         .then((response) => {
           this.store.update_item(response.data);
+          this.$emit("closeModal");
         });
     },
     newVersion() {
-      this.history.push(this.item._id)
+      this.history.push(this.item._id);
       let payload = {
         path: this.path,
         version: this.item.version + 1,
@@ -168,17 +174,14 @@ export default {
         history: this.history,
       };
       axios
-        .post(
-          "http://localhost:8000/itemfile/",
-          JSON.stringify(payload),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
+        .post("http://localhost:8000/itemfile/", JSON.stringify(payload), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
         .then((response) => {
-          this.store.update_item(response.data);
+          this.store.update_version_item(response.data);
+          this.$emit("closeModal");
         });
     },
   },
