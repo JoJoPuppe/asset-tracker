@@ -1,22 +1,24 @@
 <template>
-  <div class="rounded-box border border-secondary m-2">
-    <div class="flex justify-between items-center">
+  <div class="box border-l border-t border-secondary text-slate-600 ">
+    <div class="flex justify-between">
+    <div class="flex items-center">
       <FolderIcon
         class="flex-inital py-2 px-1 w-12 h-full border-r-8 border-secondary text-secondary"
       />
-      <p class="">{{ item.element.name }}</p>
-      <ChevronRightIcon
-        class="w-8 h-8 p-2 m-1 hover:text-secondary"
-        :class="{ 'rotate-90': isOpen }"
-        @click="handleCollapse"
-      />
+        <p class="px-2">{{ item.element.name }}</p>
+      </div>
+        <ChevronRightIcon
+          class="w-10 h-10 p-2 hover:text-secondary"
+          :class="{ 'rotate-90': isOpen }"
+          @click="handleCollapse"
+        />
     </div>
-  </div>
   <Collapse :when="isOpen" class="open_this">
-    <div class="flex">
+    <div class="flex ml-8">
       <slot></slot>
     </div>
   </Collapse>
+  </div>
 </template>
 
 <script setup>

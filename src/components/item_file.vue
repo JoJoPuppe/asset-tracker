@@ -1,32 +1,41 @@
 <template>
-  <div class="rounded-box bg-slate-300 border border-slate-400 m-2">
-    <div class="flex justify-between items-center">
-      <DocumentIcon
-        class="flex-inital py-2 px-1 w-12 h-full border-r-8 border-primary text-primary"
-      />
-      <p class="">{{ item.element.name }}</p>
-      <ChevronRightIcon
-        class="w-8 h-8 p-2 m-1 hover:text-secondary"
-        :class="{ 'rotate-90': isOpen }"
-        @click="handleCollapse"
-      />
-      <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost rounded-btn">more</label>
-        <ul
-          tabindex="0"
-          class="menu dropdown-content p-2 shadow bg-base-100 border border-primary rounded-box w-52 mt-4"
-        >
-          <li><a @click="get_more(item.element._id)">More</a></li>
-          <li><a @click="$emit('updateItem', item)">Update</a></li>
-          <li><a>Delete</a></li>
-        </ul>
+  <div class="box border-t border-l border-slate-400 hover:bg-base-200">
+    <div class="flex justify-between">
+      <div class="flex text-slate-600 items-center">
+        <DocumentIcon
+          class="py-2 px-1 w-12 h-full border-r-8 border-primary text-primary"
+        />
+        <p class="px-2">{{ item.element.name }}</p>
       </div>
+      <div class="flex items-center text-slate-600">
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="cursor-pointer ">
+            <EllipsisVerticalIcon
+              class="w-6 h-6"
+            />
+          </label>
+          <ul
+            tabindex="0"
+            class="menu dropdown-content p-2 shadow bg-base-100 border border-primary rounded-box w-52 mt-4"
+          >
+            <li><a @click="get_more(item.element._id)">Details</a></li>
+            <li><a @click="$emit('updateItem', item)">Update Item</a></li>
+            <li><a @click="$emit('newVersion', item)">New Version</a></li>
+            <li><a>Delete</a></li>
+          </ul>
+        </div>
+        <ChevronRightIcon
+            class="w-10 h-10 p-2 hover:text-secondary"
+            :class="{ 'rotate-90': isOpen }"
+            @click="handleCollapse"
+          />
+        </div>
     </div>
     <Collapse :when="isOpen" class="open_this">
       <div class="flex h-full">
-        <div class="w-12 flex-inital border-r-8 border-primary"></div>
-        <div class="flex-grow py-4">
-          <ItemDetails />
+        <div class="w-12 border-r-8 border-primary"></div>
+        <div class="flex-grow">
+          <ItemDetails :item="item"/>
         </div>
       </div>
     </Collapse>
@@ -36,7 +45,7 @@
 <script setup>
 import { ref } from "vue";
 import { useMoreStore } from "../stores/more_store";
-import { DocumentIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
+import { DocumentIcon, ChevronRightIcon, EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import { Collapse } from "vue-collapsed";
 import ItemDetails from "./item_details.vue";
 import axios from "axios";
@@ -50,7 +59,7 @@ function handleCollapse() {
 }
 
 function get_more(item_id) {
-  axios.get("http://localhost:8000/itemfile/" + item_id).then((response) => {
+  axios.get("http://localhost:8000/itemfile/v2/" + item_id).then((response) => {
     store.cache_item(response.data);
     store.more = true;
   });

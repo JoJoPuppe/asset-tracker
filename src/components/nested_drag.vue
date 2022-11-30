@@ -11,7 +11,7 @@
         <ItemFolder v-if="element.item_type === 'folder'" :item="{ element }">
           <nested-draggable :children="element.children" />
         </ItemFolder>
-        <ItemFile @update-item="update_item" v-else :item="{ element }" />
+        <ItemFile @new-version="new_version" @update-item="update_item" v-else :item="{ element }" />
       </li>
     </template>
   </draggable>
@@ -19,17 +19,15 @@
     type="checkbox"
     id="modal-update-item"
     class="modal-toggle"
-    v-model="checked"
+    v-model="checked_update"
   />
   <div class="modal">
-    <div class="modal-box relative">
-      <label
-        for="modal-update-item"
-        class="btn btn-sm btn-circle absolute right-2 top-2"
-        >✕</label
-      >
-      <h3 class="text-lg font-bold">Add Item</h3>
-      <ItemForm :item="item" />
+    <div class="modal-box">
+      <h3 class="text-lg font-bold font-slate-600">Add/Change Item</h3>
+      <ItemForm :item="item" :type="type" />
+      <div class="modal-action">
+        <button @click="checked_update=!checked_update" class="btn">close</button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,14 +45,21 @@ export default {
   },
   data() {
     return {
-      checked: false,
+      checked_update: false,
+      type: "",
       item: {},
     };
   },
   methods: {
     update_item(item) {
-      this.checked = true;
+      this.checked_update = true;
       this.item = item.element;
+      this.type = 'update';
+    },
+    new_version(item) {
+      this.checked_update = true;
+      this.item = item.element;
+      this.type = 'version'
     },
   },
   components: {
@@ -69,6 +74,6 @@ export default {
 <style scoped>
 .dragArea {
   min-height: 50px;
-  padding: 0 0 0 25px;
+  padding: 0 0 0 0px;
 }
 </style>
