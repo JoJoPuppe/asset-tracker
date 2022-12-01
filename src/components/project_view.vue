@@ -99,7 +99,6 @@ export default {
       axios
         .get("http://localhost:8000/" + this.$route.params.id)
         .then((response) => {
-          console.log(response.data);
           this.store.fill_store(JSON.parse(response.data));
         });
     },

@@ -3,7 +3,8 @@
     <div class="flex justify-between">
       <div class="flex text-slate-600 items-center">
         <DocumentIcon
-          class="py-2 px-1 w-12 h-full border-r-8 border-primary text-primary"
+          class="py-2 px-1 w-12 h-full border-r-8 text-primary"
+          :class="statusClass"
         />
         <p class="px-2">{{ item.element.name }}</p>
       </div>
@@ -94,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useMoreStore } from "../stores/more_store";
 import { useTrackerStore } from "../stores/tracker_store";
 import { DocumentIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
@@ -104,11 +105,32 @@ import { Collapse } from "vue-collapsed";
 import ItemDetails from "./item_details.vue";
 import axios from "axios";
 const props = defineProps(["item"]);
+const emits = defineEmits(["updateItem", "newVersion"]);
 
 const store = useMoreStore();
 const trackerStore = useTrackerStore();
 const isOpen = ref(false);
 const check_delete = ref(false);
+
+const item_status = ref(props.item.element.status);
+
+const statusClass = computed(() => ({
+  "border-success": item_status.value === 3,
+  "border-warning": item_status.value === 2,
+  "border-blue-300": item_status.value === 1,
+  "border-slate-300": item_status.value === 0,
+}));
+
+function set_status(state) {
+  axios
+    .put("http://localhost:8000/itemfile/" + props.item.element._id, {
+      status: state,
+    })
+    .then((response) => {
+      trackerStore.update_item(response.data);
+      item_status.value = state;
+    });
+}
 
 function handleCollapse() {
   isOpen.value = !isOpen.value;

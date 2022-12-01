@@ -6,6 +6,8 @@
     :group="{ name: 'g1' }"
     handle=".handle"
     item-key="_id"
+    @end="onEnd"
+    @change="onChange"
   >
     <template #item="{ element }">
       <li>
@@ -49,12 +51,19 @@ import draggable from "vuedraggable";
 import ItemFile from "./item_file.vue";
 import ItemFolder from "./item_folder.vue";
 import ItemForm from "./add_item.vue";
+import { useTrackerStore } from "../stores/tracker_store";
 export default {
   props: {
     children: {
       required: true,
       type: Array,
     },
+  },
+  setup() {
+    const store = useTrackerStore();
+    return {
+      store,
+    };
   },
   data() {
     return {
@@ -64,6 +73,21 @@ export default {
     };
   },
   methods: {
+    onEnd(ev) {},
+    onChange(ev) {
+      console.log(ev);
+      if ("moved" in ev) {
+        const el = ev["moved"];
+        console.log(el.element._id);
+        console.log(el.newIndex);
+      } else if ("added" in ev) {
+        const el = ev["added"];
+        console.log(el.element._id);
+        console.log(el.newIndex);
+      } else {
+        return;
+      }
+    },
     update_item(item) {
       this.checked_update = true;
       this.item = item.element;

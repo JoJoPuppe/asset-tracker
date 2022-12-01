@@ -3,6 +3,11 @@ export const useTrackerStore = defineStore("tracker", {
   state: () => ({
     list: [],
   }),
+  getters: {
+    get_parent_id(state) {
+      return (id) => state.list.find((user) => user.id === id);
+    },
+  },
   actions: {
     add_item(data) {
       this.list.push(data);
