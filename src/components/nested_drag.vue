@@ -77,17 +77,18 @@ export default {
   },
   methods: {
     onChange(ev) {
-      axios.put("http://localhost:8000/reorder", JSON.stringify(this.store.list))
+      axios
+        .put("http://localhost:8000/reorder", JSON.stringify(this.store.list))
         .then((response) => {
-         console.log(response.data)
+          console.log(response.data);
         });
     },
-    get_parent_id(child_id, arr){
+    get_parent_id(child_id, arr) {
       for (let i = 0; i < arr.length; i++) {
-        if (arr[i].children){
-          for (let j = 0; j<arr[i].children.length; j++){
-            if (arr[i].children[j]._id === child_id){
-              return arr[i]._id
+        if (arr[i].children) {
+          for (let j = 0; j < arr[i].children.length; j++) {
+            if (arr[i].children[j]._id === child_id) {
+              return arr[i]._id;
             }
             if (arr[i].children[j].children) {
               this.get_parent_id(child_id, arr[i].children);
@@ -95,7 +96,7 @@ export default {
           }
         }
       }
-      return null
+      return null;
     },
     update_item(item) {
       this.checked_update = true;

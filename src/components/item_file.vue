@@ -62,7 +62,7 @@
     </div>
     <Collapse :when="isOpen" class="open_this">
       <div class="flex h-full">
-        <div class="w-12 border-r-8 border-primary"></div>
+        <div class="w-12 border-r-8 border-primary" :class="statusClass"></div>
         <div class="flex-grow">
           <ItemDetails :item="item" />
         </div>
