@@ -6,8 +6,7 @@
     :group="{ name: 'g1' }"
     handle=".handle"
     item-key="_id"
-    @end="onEnd"
-    @change="onChange"
+    @end="onChange"
   >
     <template #item="{ element }">
       <li>
@@ -51,7 +50,9 @@ import draggable from "vuedraggable";
 import ItemFile from "./item_file.vue";
 import ItemFolder from "./item_folder.vue";
 import ItemForm from "./add_item.vue";
+import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
+import { useOrderStore } from "../stores/order_store";
 export default {
   props: {
     children: {
@@ -61,8 +62,10 @@ export default {
   },
   setup() {
     const store = useTrackerStore();
+    const orderStore = useOrderStore();
     return {
       store,
+      orderStore,
     };
   },
   data() {
@@ -73,20 +76,26 @@ export default {
     };
   },
   methods: {
-    onEnd(ev) {},
     onChange(ev) {
-      console.log(ev);
-      if ("moved" in ev) {
-        const el = ev["moved"];
-        console.log(el.element._id);
-        console.log(el.newIndex);
-      } else if ("added" in ev) {
-        const el = ev["added"];
-        console.log(el.element._id);
-        console.log(el.newIndex);
-      } else {
-        return;
+      axios.put("http://localhost:8000/reorder", JSON.stringify(this.store.list))
+        .then((response) => {
+         console.log(response.data)
+        });
+    },
+    get_parent_id(child_id, arr){
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].children){
+          for (let j = 0; j<arr[i].children.length; j++){
+            if (arr[i].children[j]._id === child_id){
+              return arr[i]._id
+            }
+            if (arr[i].children[j].children) {
+              this.get_parent_id(child_id, arr[i].children);
+            }
+          }
+        }
       }
+      return null
     },
     update_item(item) {
       this.checked_update = true;

@@ -63,6 +63,7 @@
 <script>
 import { useTrackerStore } from "../stores/tracker_store";
 import { useMoreStore } from "../stores/more_store";
+import { useOrderStore } from "../stores/order_store";
 import { ref } from "vue";
 import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
@@ -80,9 +81,11 @@ export default {
   setup() {
     const store = useTrackerStore();
     const more_store = useMoreStore();
+    const orderStore = useOrderStore();
     return {
       store,
       more_store,
+      orderStore,
     };
   },
   data() {
@@ -94,12 +97,11 @@ export default {
     this.get_project();
   },
   methods: {
-    addItem() {},
     get_project() {
       axios
         .get("http://localhost:8000/" + this.$route.params.id)
         .then((response) => {
-          this.store.fill_store(JSON.parse(response.data));
+          this.store.fill_store(JSON.parse(response.data).tree);
         });
     },
   },

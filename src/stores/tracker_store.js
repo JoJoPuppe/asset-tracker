@@ -14,6 +14,7 @@ export const useTrackerStore = defineStore("tracker", {
     },
 
     fill_store(data) {
+      this.rec_sort(data)
       this.list = data;
     },
     update_item(data) {
@@ -43,9 +44,17 @@ export const useTrackerStore = defineStore("tracker", {
           return;
         }
         if (arr[i].children) {
-          this.find_id(id, id_type, arr[i].children);
+          this.find_id_and_delete(id, id_type, arr[i].children);
         }
       }
+    },
+    rec_sort(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].children) {
+          this.rec_sort(arr[i].children);
+        }
+      }
+      arr.sort(function compFn(a, b){ a.oder_index < b.order_index })
     },
   },
 });
