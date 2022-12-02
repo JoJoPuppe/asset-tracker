@@ -16,7 +16,9 @@
         <p class="font-bold text-lg">{{ project_name }}</p>
       </div>
       </div>
-    <div class="mx-2">
+    <div class="mx-2 flex flex-row">
+      <CloudArrowUpIcon v-if="waiting" class="text-accent w-8"/>
+      <CheckCircleIcon v-else class="text-accent w-8"/>
       <label for="my-modal-item" class="btn btn-sm btn-accent mx-2">add item</label>
       <label for="my-modal-folder" class="btn btn-sm btn-accent mx-2"
         >add folder</label
@@ -32,7 +34,7 @@
     />
 
     <div class="drawer-content m-8">
-      <nestedDraggable :children="list" />
+      <nestedDraggable :children="list"/>
     </div>
     <div class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>
@@ -79,11 +81,13 @@
 <script>
 import { useTrackerStore } from "../stores/tracker_store";
 import { useMoreStore } from "../stores/more_store";
+import { useDebounceStore } from "../stores/debounce_store";
 import { ref } from "vue";
 import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
 import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
+import { CloudArrowUpIcon, CheckCircleIcon } from "@heroicons/vue/24/outline";
 import axios from "axios";
 
 export default {
@@ -92,13 +96,17 @@ export default {
     ItemForm,
     SideBarContent,
     FolderForm,
+    CloudArrowUpIcon,
+    CheckCircleIcon,
   },
   setup() {
     const store = useTrackerStore();
     const more_store = useMoreStore();
+    const debounceStore = useDebounceStore();
     return {
       store,
       more_store,
+      debounceStore,
     };
   },
   data() {
@@ -128,6 +136,9 @@ export default {
     },
   },
   computed: {
+    waiting(){
+      return this.debounceStore.waiting;
+    },
     list() {
       return this.store.list;
     },

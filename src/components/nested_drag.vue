@@ -52,7 +52,8 @@ import ItemFolder from "./item_folder.vue";
 import ItemForm from "./add_item.vue";
 import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
-import { useOrderStore } from "../stores/order_store";
+import { useDebounceStore } from "../stores/debounce_store";
+import _ from 'lodash';
 export default {
   props: {
     children: {
@@ -62,26 +63,38 @@ export default {
   },
   setup() {
     const store = useTrackerStore();
-    const orderStore = useOrderStore();
+    const debounceStore = useDebounceStore();
     return {
       store,
-      orderStore,
+      debounceStore,
     };
   },
   data() {
     return {
       checked_update: false,
       type: "",
+      debouncing: false,
       item: {},
     };
   },
   methods: {
-    onChange(ev) {
+    reorder: _.debounce((store_reorder, callback) => {
       axios
-        .put("http://localhost:8000/reorder", JSON.stringify(this.store.list))
+        .put("http://localhost:8000/reorder", JSON.stringify(store_reorder))
         .then((response) => {
           console.log(response.data);
-        });
+        }).catch((error) => {
+          console.error(error);
+        }).finally(() => {
+          callback()
+        })
+      }, 4000),
+    onChange(){
+      this.debounceStore.set_waiting(true)
+      this.reorder(this.store.list, this.callback_reorder)
+    },
+    callback_reorder(){
+      this.debounceStore.set_waiting(false)
     },
     get_parent_id(child_id, arr) {
       for (let i = 0; i < arr.length; i++) {
@@ -127,4 +140,5 @@ export default {
 .handle {
   float: left;
 }
+
 </style>
