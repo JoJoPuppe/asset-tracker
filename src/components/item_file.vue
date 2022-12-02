@@ -1,7 +1,7 @@
 <template>
-  <div class="box border-t border-l border-slate-400 hover:bg-base-200">
+  <div class="box rounded-lg bg-base-100 mb-1 mr-1">
     <div class="flex justify-between">
-      <div class="flex text-slate-600 items-center">
+      <div class="flex text-primary items-center">
         <DocumentIcon
           class="py-2 px-1 w-12 h-full border-r-8 text-primary"
           :class="statusClass"
@@ -11,7 +11,7 @@
       <div class="flex items-center text-slate-600">
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="cursor-pointer">
-            <ChartBarIcon class="w-6 h-6" />
+            <ChartBarIcon class="w-6 h-6 mr-2 hover:fill-neutral" />
           </label>
           <ul
             tabindex="0"
@@ -41,7 +41,7 @@
         </div>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="cursor-pointer">
-            <EllipsisHorizontalIcon class="w-6 h-6" />
+            <EllipsisHorizontalIcon class="w-6 h-6 hover:fill-neutral" />
           </label>
           <ul
             tabindex="0"
@@ -54,20 +54,20 @@
           </ul>
         </div>
         <ChevronRightIcon
-          class="w-10 h-10 p-2 hover:text-secondary"
+          class="w-10 h-10 p-2 hover:text-neutral"
           :class="{ 'rotate-90': isOpen }"
-          @click="handleCollapse"
+          @click="isOpen=!isOpen"
         />
       </div>
     </div>
-    <Collapse :when="isOpen" class="open_this">
-      <div class="flex h-full">
+    <collapse-transition>
+      <div v-show="isOpen" class="flex h-full">
         <div class="w-12 border-r-8 border-primary" :class="statusClass"></div>
         <div class="flex-grow">
           <ItemDetails :item="item" />
         </div>
       </div>
-    </Collapse>
+    </collapse-transition>
   </div>
 
   <input
@@ -101,7 +101,7 @@ import { useTrackerStore } from "../stores/tracker_store";
 import { DocumentIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
 import { EllipsisHorizontalIcon, ChartBarIcon } from "@heroicons/vue/24/solid";
 
-import { Collapse } from "vue-collapsed";
+import CollapseTransition from '@ivanv/vue-collapse-transition/src/CollapseTransition.vue'
 import ItemDetails from "./item_details.vue";
 import axios from "axios";
 const props = defineProps(["item"]);
@@ -130,10 +130,6 @@ function set_status(state) {
       trackerStore.update_item(response.data);
       item_status.value = state;
     });
-}
-
-function handleCollapse() {
-  isOpen.value = !isOpen.value;
 }
 
 function delete_item(item_id) {
