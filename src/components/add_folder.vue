@@ -6,7 +6,7 @@
     v-model="item_name"
     type="text"
     placeholder="Type here"
-    class="input input-bordered w-full max-w-xs"
+    class="input input-bordered w-full max-w-xs text-primary"
   />
   <button @click="addItem" class="btn">add folder</button>
 </template>
@@ -16,7 +16,7 @@ import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
 
 export default {
-  props: ['prj_id'],
+  props: ["prj_id"],
   setup() {
     const store = useTrackerStore();
     return {
@@ -36,11 +36,15 @@ export default {
         project_id: this.prj_id,
       };
       axios
-        .post("http://localhost:8000/itemfolder/", JSON.stringify(payload), {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .post(
+          "http://localhost:8000/api/itemfolder/",
+          JSON.stringify(payload),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((response) => {
           this.store.add_item(response.data);
           console.log(this.store.list);

@@ -1,80 +1,86 @@
 <template>
   <div class="bg-base-300">
-  <div class="bg-primary h-16 flex justify-between items-center p-4">
+    <div class="bg-primary h-16 flex justify-between items-center p-4">
       <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 80.81 107.23"
-           class="fill-base-100 w-10 -ml-2 -mt-1">
-        <g>
-        <path d="M52.85,68.14H36.17v30.11h-5.17c-6.74,0-12.21-5.47-12.21-12.21V17.18h34.05c6.78,0,12.28,5.5,12.28,12.28
+          class="fill-base-100 w-10 -ml-2 -mt-1"
+        >
+          <g>
+            <path
+              d="M52.85,68.14H36.17v30.11h-5.17c-6.74,0-12.21-5.47-12.21-12.21V17.18h34.05c6.78,0,12.28,5.5,12.28,12.28
             v26.41C65.13,63.16,60.26,68.14,52.85,68.14z M47.41,33.39H36.17v18.53h11.24c0.19,0,0.35-0.16,0.35-0.35V33.74
-            C47.76,33.55,47.6,33.39,47.41,33.39z"/>
-        </g>
+            C47.76,33.55,47.6,33.39,47.41,33.39z"
+            />
+          </g>
         </svg>
-      <div class="mx-4">
-        <p class="font-bold text-sm">Asset Tracker</p>
-        <p class="font-bold text-lg">{{ project_name }}</p>
+        <div class="mx-4">
+          <p class="font-bold text-sm">Asset Tracker</p>
+          <p class="font-bold text-lg">{{ project_name }}</p>
+        </div>
       </div>
-      </div>
-    <div class="mx-2 flex flex-row">
-      <CloudArrowUpIcon v-if="waiting" class="text-accent w-8"/>
-      <CheckCircleIcon v-else class="text-accent w-8"/>
-      <label for="my-modal-item" class="btn btn-sm btn-accent mx-2">add item</label>
-      <label for="my-modal-folder" class="btn btn-sm btn-accent mx-2"
-        >add folder</label
-      >
-    </div>
-  </div>
-  <div class="drawer drawer-end">
-    <input
-      id="my-drawer-4"
-      type="checkbox"
-      class="drawer-toggle"
-      v-model="checked"
-    />
-
-    <div class="drawer-content m-8">
-      <nestedDraggable :children="list"/>
-    </div>
-    <div class="drawer-side">
-      <label for="my-drawer-4" class="drawer-overlay"></label>
-      <div class="menu p-4 w-80 bg-base-100 text-base-content">
-        <SideBarContent :item-data="more" />
+      <div class="mx-2 flex flex-row">
+        <CloudArrowUpIcon v-if="waiting" class="text-accent w-8" />
+        <CheckCircleIcon v-else class="text-accent w-8" />
+        <label for="my-modal-item" class="btn btn-sm btn-accent mx-2"
+          >add item</label
+        >
+        <label for="my-modal-folder" class="btn btn-sm btn-accent mx-2"
+          >add folder</label
+        >
       </div>
     </div>
-  </div>
-  <input
-    type="checkbox"
-    id="my-modal-item"
-    class="modal-toggle"
-    v-model="add_checked"
-  />
-  <div class="modal">
-    <div class="modal-box relative">
-      <label
-        for="my-modal-item"
-        class="btn btn-sm btn-circle absolute right-2 top-2"
-        >✕</label
-      >
-      <h3 class="text-lg font-bold">Add Item</h3>
-      <ItemForm
-        @close-modal="add_checked = !add_checked"
-        :prj_id="$route.params.id"
+    <div class="drawer drawer-end">
+      <input
+        id="my-drawer-4"
+        type="checkbox"
+        class="drawer-toggle"
+        v-model="checked"
       />
+
+      <div class="drawer-content m-8">
+        <nestedDraggable :children="list" />
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-4" class="drawer-overlay"></label>
+        <div class="menu p-4 w-80 bg-base-100 text-base-content">
+          <SideBarContent :item-data="more" />
+        </div>
+      </div>
     </div>
-  </div>
-  <input type="checkbox" id="my-modal-folder" class="modal-toggle" />
-  <div class="modal">
-    <div class="modal-box relative">
-      <label
-        for="my-modal-folder"
-        class="btn btn-sm btn-circle absolute right-2 top-2"
-        >✕</label
-      >
-      <h3 class="text-lg font-bold">Add Folder</h3>
-      <FolderForm :prj_id="$route.params.id" />
+    <input
+      type="checkbox"
+      id="my-modal-item"
+      class="modal-toggle"
+      v-model="add_checked"
+    />
+    <div class="modal">
+      <div class="modal-box relative">
+        <label
+          for="my-modal-item"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕</label
+        >
+        <h3 class="text-lg font-bold">Add Item</h3>
+        <ItemForm
+          @close-modal="add_checked = !add_checked"
+          :prj_id="$route.params.id"
+        />
+      </div>
     </div>
-  </div>
+    <input type="checkbox" id="my-modal-folder" class="modal-toggle" />
+    <div class="modal">
+      <div class="modal-box relative">
+        <label
+          for="my-modal-folder"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕</label
+        >
+        <h3 class="text-lg font-bold">Add Folder</h3>
+        <FolderForm :prj_id="$route.params.id" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -122,21 +128,21 @@ export default {
   methods: {
     get_project() {
       axios
-        .get("http://localhost:8000/" + this.$route.params.id)
+        .get("http://localhost:8000/api/project/" + this.$route.params.id)
         .then((response) => {
           this.store.fill_store(JSON.parse(response.data));
         });
     },
     get_project_name() {
       axios
-        .get("http://localhost:8000/name/" + this.$route.params.id)
+        .get("http://localhost:8000/api/project/name/" + this.$route.params.id)
         .then((response) => {
-          this.project_name = response.data.name
+          this.project_name = response.data.name;
         });
     },
   },
   computed: {
-    waiting(){
+    waiting() {
       return this.debounceStore.waiting;
     },
     list() {

@@ -56,7 +56,7 @@
         <ChevronRightIcon
           class="w-10 h-10 p-2 hover:text-neutral"
           :class="{ 'rotate-90': isOpen }"
-          @click="isOpen=!isOpen"
+          @click="isOpen = !isOpen"
         />
       </div>
     </div>
@@ -101,7 +101,7 @@ import { useTrackerStore } from "../stores/tracker_store";
 import { DocumentIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
 import { EllipsisHorizontalIcon, ChartBarIcon } from "@heroicons/vue/24/solid";
 
-import CollapseTransition from '@ivanv/vue-collapse-transition/src/CollapseTransition.vue'
+import CollapseTransition from "@ivanv/vue-collapse-transition/src/CollapseTransition.vue";
 import ItemDetails from "./item_details.vue";
 import axios from "axios";
 const props = defineProps(["item"]);
@@ -123,7 +123,7 @@ const statusClass = computed(() => ({
 
 function set_status(state) {
   axios
-    .put("http://localhost:8000/itemfile/" + props.item.element._id, {
+    .put("http://localhost:8000/api/itemfile/" + props.item.element._id, {
       status: state,
     })
     .then((response) => {
@@ -133,24 +133,28 @@ function set_status(state) {
 }
 
 function delete_item(item_id) {
-  axios.delete("http://localhost:8000/itemfile/" + item_id).then((response) => {
-    check_delete.value = !check_delete.value;
-  });
+  axios
+    .delete("http://localhost:8000/api/itemfile/" + item_id)
+    .then((response) => {
+      check_delete.value = !check_delete.value;
+    });
 }
 
 function delete_all(item_id) {
   axios
-    .delete("http://localhost:8000/itemfile/history/" + item_id)
+    .delete("http://localhost:8000/api/itemfile/history/" + item_id)
     .then((response) => {
       trackerStore.delete_item_with_versions(item_id);
       check_delete.value = !check_delete.value;
     });
 }
 function get_more(item_id) {
-  axios.get("http://localhost:8000/itemfile/v2/" + item_id).then((response) => {
-    store.cache_item(response.data);
-    store.more = true;
-  });
+  axios
+    .get("http://localhost:8000/api/itemfile/v2/" + item_id)
+    .then((response) => {
+      store.cache_item(response.data);
+      store.more = true;
+    });
 }
 </script>
 

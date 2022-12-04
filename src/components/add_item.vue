@@ -122,7 +122,7 @@ export default {
         requirements: [],
       };
       axios
-        .post("http://localhost:8000/itemfile/", JSON.stringify(payload), {
+        .post("http://localhost:8000/api/itemfile/", JSON.stringify(payload), {
           headers: {
             "Content-Type": "application/json",
           },
@@ -145,7 +145,7 @@ export default {
       };
       axios
         .put(
-          "http://localhost:8000/itemfile/" + this.item._id,
+          "http://localhost:8000/api/itemfile/" + this.item._id,
           JSON.stringify(payload),
           {
             headers: {
@@ -174,7 +174,7 @@ export default {
         history: this.history,
       };
       axios
-        .post("http://localhost:8000/itemfile/", JSON.stringify(payload), {
+        .post("http://localhost:8000/api/itemfile/", JSON.stringify(payload), {
           headers: {
             "Content-Type": "application/json",
           },
