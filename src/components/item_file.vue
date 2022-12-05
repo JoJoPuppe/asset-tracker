@@ -123,9 +123,9 @@ const statusClass = computed(() => ({
 
 function set_status(state) {
   axios
-    .put("http://localhost:8000/api/itemfile/" + props.item.element._id, {
+    ({method:"put", url: "/itemfile/" + props.item.element._id, baseURL: import.meta.env.VITE_BASEURL, data: {
       status: state,
-    })
+    }})
     .then((response) => {
       trackerStore.update_item(response.data);
       item_status.value = state;
@@ -134,7 +134,7 @@ function set_status(state) {
 
 function delete_item(item_id) {
   axios
-    .delete("http://localhost:8000/api/itemfile/" + item_id)
+    ({method: "delete", url: "/itemfile/" + item_id, baseURL: import.meta.env.VITE_BASEURL})
     .then((response) => {
       check_delete.value = !check_delete.value;
     });
@@ -142,7 +142,7 @@ function delete_item(item_id) {
 
 function delete_all(item_id) {
   axios
-    .delete("http://localhost:8000/api/itemfile/history/" + item_id)
+    ({method:"delete", url: "/itemfile/history/" + item_id, baseURL: import.meta.env.VITE_BASEURL})
     .then((response) => {
       trackerStore.delete_item_with_versions(item_id);
       check_delete.value = !check_delete.value;
@@ -150,7 +150,7 @@ function delete_all(item_id) {
 }
 function get_more(item_id) {
   axios
-    .get("http://localhost:8000/api/itemfile/v2/" + item_id)
+    ({url: "/itemfile/v2/" + item_id, baseURL: import.meta.env.VITE_BASEURL})
     .then((response) => {
       store.cache_item(response.data);
       store.more = true;

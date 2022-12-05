@@ -11,8 +11,8 @@
       <div class="card bg-primary">
         <a
           class="link link-hover text-xl font-bold text-accent"
-          :href="`http://assetobserver.de/prj/${$route.params.id}`"
-          >http://assetobserver.de/prj/{{ $route.params.id }}</a
+          :href="`${baseurl}/prj/${$route.params.id}`"
+          >{{ baseurl }}/prj/{{ $route.params.id }}</a
         >
       </div>
     </div>
@@ -20,5 +20,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      baseurl: import.meta.env.VITE_ASSETBASE,
+    }
+  }
+};
 </script>

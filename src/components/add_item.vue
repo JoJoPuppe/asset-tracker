@@ -122,7 +122,7 @@ export default {
         requirements: [],
       };
       axios
-        .post("http://localhost:8000/api/itemfile/", JSON.stringify(payload), {
+        ({method: "post", url: "/itemfile", baseURL: import.meta.env.VITE_BASEURL, data: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
           },
@@ -144,10 +144,9 @@ export default {
         comment: this.comment,
       };
       axios
-        .put(
-          "http://localhost:8000/api/itemfile/" + this.item._id,
+        ({method:"put", url: "/itemfile/" + this.item._id, baseURL: import.meta.env.VITE_BASEURL, data:
           JSON.stringify(payload),
-          {
+
             headers: {
               "Content-Type": "application/json",
             },
@@ -174,7 +173,7 @@ export default {
         history: this.history,
       };
       axios
-        .post("http://localhost:8000/api/itemfile/", JSON.stringify(payload), {
+        ({method:"post", url:"/itemfile", baseURL: import.meta.env.VITE_BASEURL, data: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
           },

@@ -128,14 +128,14 @@ export default {
   methods: {
     get_project() {
       axios
-        .get("http://localhost:8000/api/project/" + this.$route.params.id)
+        ({url: "project/" + this.$route.params.id, baseURL: import.meta.env.VITE_BASEURL})
         .then((response) => {
           this.store.fill_store(JSON.parse(response.data));
         });
     },
     get_project_name() {
       axios
-        .get("http://localhost:8000/api/project/name/" + this.$route.params.id)
+        ({url:"project/name/" + this.$route.params.id, baseURL: import.meta.env.VITE_BASEURL})
         .then((response) => {
           this.project_name = response.data.name;
         });

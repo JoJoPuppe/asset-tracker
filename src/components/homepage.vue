@@ -41,7 +41,7 @@ export default {
   methods: {
     create_project() {
       axios
-        .post("http://localhost:8000/api/project/", { name: this.project_name })
+        ({method:"post", url: "/project", baseURL: import.meta.env.VITE_BASEURL, data:{ name: this.project_name }})
         .then((response) => {
           console.log("project " + this.project_name + " added.");
           console.log(response.data._id);

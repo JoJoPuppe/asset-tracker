@@ -36,10 +36,9 @@ export default {
         project_id: this.prj_id,
       };
       axios
-        .post(
-          "http://localhost:8000/api/itemfolder/",
+        (
+          {method: "post", url: "/itemfolder", baseURL: import.meta.env.VITE_BASEURL, data:
           JSON.stringify(payload),
-          {
             headers: {
               "Content-Type": "application/json",
             },
