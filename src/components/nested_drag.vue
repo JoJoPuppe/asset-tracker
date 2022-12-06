@@ -80,9 +80,8 @@ export default {
   methods: {
     reorder: _.debounce((store_reorder, callback) => {
       axios
-        .put(
-          "http://localhost:8000/api/project/reorder",
-          JSON.stringify(store_reorder)
+        ({method: "put", url: "project/reorder", baseURL: import.meta.env.VITE_BASEURL, data:
+          JSON.stringify(store_reorder)}
         )
         .then((response) => {
           console.log(response.data);

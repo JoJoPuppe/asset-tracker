@@ -19,6 +19,7 @@
           <p class="font-bold text-sm">Asset Tracker</p>
           <p class="font-bold text-lg">{{ project_name }}</p>
         </div>
+        <button @click="changeInfo" class="btn btn-secondary"><InformationCircleIcon class="text-accent w-8" /></button>
       </div>
       <div class="mx-2 flex flex-row">
         <CloudArrowUpIcon v-if="waiting" class="text-accent w-8" />
@@ -69,6 +70,7 @@
         />
       </div>
     </div>
+
     <input type="checkbox" id="my-modal-folder" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box relative">
@@ -79,6 +81,19 @@
         >
         <h3 class="text-lg font-bold">Add Folder</h3>
         <FolderForm :prj_id="$route.params.id" />
+      </div>
+    </div>
+
+    <input type="checkbox" id="info-modal" class="modal-toggle" v-model="openInfo"/>
+    <div class="modal">
+      <div class="modal-box relative">
+        <label
+          for="info-modal"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕</label
+        >
+        <h3 class="text-lg font-bold">Project Details</h3>
+        <ProjectDetails />
       </div>
     </div>
   </div>
@@ -93,17 +108,20 @@ import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
 import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
-import { CloudArrowUpIcon, CheckCircleIcon } from "@heroicons/vue/24/outline";
+import ProjectDetails from "./project_details.vue";
+import { CloudArrowUpIcon, CheckCircleIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
 import axios from "axios";
 
 export default {
   components: {
+    ProjectDetails,
     nestedDraggable,
     ItemForm,
     SideBarContent,
     FolderForm,
     CloudArrowUpIcon,
     CheckCircleIcon,
+    InformationCircleIcon,
   },
   setup() {
     const store = useTrackerStore();
@@ -119,6 +137,7 @@ export default {
     return {
       add_checked: false,
       project_name: "My Project",
+      openInfo: false,
     };
   },
   mounted() {
@@ -126,6 +145,10 @@ export default {
     this.get_project();
   },
   methods: {
+    changeInfo(){
+      this.openInfo = true;
+      console.log(this.openInfo);
+    },
     get_project() {
       axios
         ({url: "project/" + this.$route.params.id, baseURL: import.meta.env.VITE_BASEURL})
