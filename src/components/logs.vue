@@ -1,35 +1,36 @@
 <template>
-  <div v-html="content">
-  </div>
+  <div v-html="content" />
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  components: {
-  },
-  props: ['proj_id'],
+  components: {},
+  props: ["proj_id", "proj_load"],
   data() {
     return {
-      content: '',
-    }
+      content: "",
+    };
   },
   methods: {
-    loadLogs(){
+    loadLogs() {
       const date_now = Date.now();
-      axios
-        ({url:"logs/" + this.proj_id, baseURL: import.meta.env.VITE_BASEURL})
-        .then((response) => {
-          console.log(response.data)
-          this.content = JSON.parse(respose.data)[0].log_message;
-        });
-    }
+      axios({
+        url: "logs/" + this.proj_id,
+        baseURL: import.meta.env.VITE_BASEURL,
+      }).then((response) => {
+        console.log(response.data);
+        this.content = response.data[0].log_message;
+      });
+    },
   },
-  created() {
-    this.loadLogs()
-  }
-}
+  watch: {
+    proj_load(val, oldVal) {
+      this.loadLogs();
+    },
+  },
+};
 </script>
 
 <style>

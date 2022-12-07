@@ -19,8 +19,15 @@
           <p class="font-bold text-sm">Asset Tracker</p>
           <p class="font-bold text-lg">{{ project_name }}</p>
         </div>
-        <button @click="changeInfo" class="btn btn-outline btn-accent btn-sm mr-4">add note</button>
-        <button @click="showNotes" class="btn btn-outline btn-accent btn-sm">show notes</button>
+        <button
+          @click="changeInfo"
+          class="btn btn-outline btn-accent btn-sm mr-4"
+        >
+          add note
+        </button>
+        <button @click="showNotes" class="btn btn-outline btn-accent btn-sm">
+          show notes
+        </button>
       </div>
       <div class="mx-2 flex flex-row">
         <CloudArrowUpIcon v-if="waiting" class="text-accent w-8" />
@@ -47,9 +54,8 @@
       <div class="drawer-side">
         <label for="my-drawer-4" class="drawer-overlay"></label>
         <div class="menu p-4 w-1/2 bg-base-100 text-base-content">
-          <MessageLogs :proj_id="$route.params.id"/>
+          <MessageLogs :proj_id="$route.params.id" />
           <!-- <SideBarContent :item-data="more" /> -->
-
         </div>
       </div>
     </div>
@@ -87,7 +93,12 @@
       </div>
     </div>
 
-    <input type="checkbox" id="info-modal" class="modal-toggle" v-model="openInfo"/>
+    <input
+      type="checkbox"
+      id="info-modal"
+      class="modal-toggle"
+      v-model="openInfo"
+    />
     <div class="modal">
       <div class="modal-box relative">
         <label
@@ -96,7 +107,7 @@
           >✕</label
         >
         <h3 class="text-lg font-bold">Project Details</h3>
-        <ProjectDetails :proj_id="$route.params.id"/>
+        <ProjectDetails :proj_id="$route.params.id" />
       </div>
     </div>
   </div>
@@ -113,7 +124,11 @@ import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
 import MessageLogs from "./logs.vue";
 import ProjectDetails from "./project_details.vue";
-import { CloudArrowUpIcon, CheckCircleIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
+import {
+  CloudArrowUpIcon,
+  CheckCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/vue/24/outline";
 import axios from "axios";
 
 export default {
@@ -143,6 +158,7 @@ export default {
       add_checked: false,
       project_name: "My Project",
       openInfo: false,
+      load_project_details: false,
     };
   },
   mounted() {
@@ -150,27 +166,29 @@ export default {
     this.get_project();
   },
   methods: {
-    showNotes(){
+    showNotes() {
       this.checked = true;
-      this.notes = true;
+      this.load_project_details = true;
     },
-    changeInfo(){
+    changeInfo() {
       this.openInfo = true;
       console.log(this.openInfo);
     },
     get_project() {
-      axios
-        ({url: "project/" + this.$route.params.id, baseURL: import.meta.env.VITE_BASEURL})
-        .then((response) => {
-          this.store.fill_store(JSON.parse(response.data));
-        });
+      axios({
+        url: "project/" + this.$route.params.id,
+        baseURL: import.meta.env.VITE_BASEURL,
+      }).then((response) => {
+        this.store.fill_store(JSON.parse(response.data));
+      });
     },
     get_project_name() {
-      axios
-        ({url:"project/name/" + this.$route.params.id, baseURL: import.meta.env.VITE_BASEURL})
-        .then((response) => {
-          this.project_name = response.data.name;
-        });
+      axios({
+        url: "project/name/" + this.$route.params.id,
+        baseURL: import.meta.env.VITE_BASEURL,
+      }).then((response) => {
+        this.project_name = response.data.name;
+      });
     },
   },
   computed: {
