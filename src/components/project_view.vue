@@ -19,7 +19,8 @@
           <p class="font-bold text-sm">Asset Tracker</p>
           <p class="font-bold text-lg">{{ project_name }}</p>
         </div>
-        <button @click="changeInfo" class="btn btn-secondary"><InformationCircleIcon class="text-accent w-8" /></button>
+        <button @click="changeInfo" class="btn btn-outline btn-accent btn-sm mr-4">add note</button>
+        <button @click="showNotes" class="btn btn-outline btn-accent btn-sm">show notes</button>
       </div>
       <div class="mx-2 flex flex-row">
         <CloudArrowUpIcon v-if="waiting" class="text-accent w-8" />
@@ -45,8 +46,10 @@
       </div>
       <div class="drawer-side">
         <label for="my-drawer-4" class="drawer-overlay"></label>
-        <div class="menu p-4 w-80 bg-base-100 text-base-content">
-          <SideBarContent :item-data="more" />
+        <div class="menu p-4 w-1/2 bg-base-100 text-base-content">
+          <MessageLogs :proj_id="$route.params.id"/>
+          <!-- <SideBarContent :item-data="more" /> -->
+
         </div>
       </div>
     </div>
@@ -93,7 +96,7 @@
           >✕</label
         >
         <h3 class="text-lg font-bold">Project Details</h3>
-        <ProjectDetails />
+        <ProjectDetails :proj_id="$route.params.id"/>
       </div>
     </div>
   </div>
@@ -108,12 +111,14 @@ import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
 import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
+import MessageLogs from "./logs.vue";
 import ProjectDetails from "./project_details.vue";
 import { CloudArrowUpIcon, CheckCircleIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
 import axios from "axios";
 
 export default {
   components: {
+    MessageLogs,
     ProjectDetails,
     nestedDraggable,
     ItemForm,
@@ -145,6 +150,10 @@ export default {
     this.get_project();
   },
   methods: {
+    showNotes(){
+      this.checked = true;
+      this.notes = true;
+    },
     changeInfo(){
       this.openInfo = true;
       console.log(this.openInfo);
