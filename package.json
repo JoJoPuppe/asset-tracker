@@ -20,6 +20,7 @@
     "vue": "^3.2.41",
     "vue-remix-icons": "^2.0.3",
     "vue-router": "^4.1.6",
+    "vue-toast-notification": "^3.0.4",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

@@ -28,7 +28,12 @@
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import { RiBold, RiH1, RiH2, RiH3, RiListUnordered, RiDoubleQuotesL  } from "vue-remix-icons";
+import RiH1 from "vue-remix-icons/icons/RiH1.vue";
+import RiH2 from "vue-remix-icons/icons/RiH2.vue";
+import RiH3 from "vue-remix-icons/icons/RiH3.vue";
+import RiBold from "vue-remix-icons/icons/RiBold.vue";
+import RiListUnordered from "vue-remix-icons/icons/RiListUnordered.vue";
+import RiDoubleQuotesL from "vue-remix-icons/icons/RiDoubleQuotesL.vue";
 import axios from 'axios';
 
 export default {

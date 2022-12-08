@@ -71,7 +71,7 @@ import axios from "axios";
 import { useTrackerStore } from "../stores/tracker_store";
 
 export default {
-  props: ["prj_id", "item", "type"],
+  props: ["prj_id", "item", "type", "parent"],
   setup() {
     const store = useTrackerStore();
     return {
@@ -121,6 +121,9 @@ export default {
         history: [],
         requirements: [],
       };
+      if (this.parent != undefined){
+        payload.parent = this.parent;
+      }
       axios
         ({method: "post", url: "/itemfile", baseURL: import.meta.env.VITE_BASEURL, data: JSON.stringify(payload),
           headers: {
@@ -128,7 +131,11 @@ export default {
           },
         })
         .then((response) => {
-          this.store.add_item(response.data);
+          if (this.parent != undefined){
+            this.store.add_item_to_parent(response.data, this.parent)
+          } else {
+            this.store.add_item(response.data);
+          }
           this.$emit("closeModal");
         });
     },

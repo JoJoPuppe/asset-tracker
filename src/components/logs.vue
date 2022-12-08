@@ -1,5 +1,9 @@
 <template>
-  <div v-html="content" />
+  <div class="mb-4">
+    <p class="font-bold text-primary text-sm">created: {{ creationDate }}</p>
+    <div class="note bg-base-200 p-4 rounded-lg ml-2 my-1" v-html="message" />
+    <p class="font-italic text-base-300 text-right text-xs">last update: {{ lastUpdate }}</p>
+  </div>
 </template>
 
 <script>
@@ -7,35 +11,19 @@ import axios from "axios";
 
 export default {
   components: {},
-  props: ["proj_id", "proj_load"],
+  props: ["message", "creationDate", "lastUpdate"],
   data() {
     return {
-      content: "",
     };
   },
   methods: {
-    loadLogs() {
-      const date_now = Date.now();
-      axios({
-        url: "logs/" + this.proj_id,
-        baseURL: import.meta.env.VITE_BASEURL,
-      }).then((response) => {
-        console.log(response.data);
-        this.content = response.data[0].log_message;
-      });
-    },
-  },
-  watch: {
-    proj_load(val, oldVal) {
-      this.loadLogs();
-    },
   },
 };
 </script>
 
 <style>
 /* Basic editor styles */
-.ProseMirror {
+.note {
   > * + * {
     margin-top: 0.55em;
   }

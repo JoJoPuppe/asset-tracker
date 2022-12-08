@@ -32,9 +32,8 @@
       <div class="mx-2 flex flex-row">
         <CloudArrowUpIcon v-if="waiting" class="text-accent w-8" />
         <CheckCircleIcon v-else class="text-accent w-8" />
-        <label for="my-modal-item" class="btn btn-sm btn-accent mx-2"
-          >add item</label
-        >
+        <button @click="add_item" class="btn btn-sm btn-accent mx-2"
+          >add item</button>
         <label for="my-modal-folder" class="btn btn-sm btn-accent mx-2"
           >add folder</label
         >
@@ -53,8 +52,8 @@
       </div>
       <div class="drawer-side">
         <label for="my-drawer-4" class="drawer-overlay"></label>
-        <div class="menu p-4 w-1/2 bg-base-100 text-base-content">
-          <MessageLogs :proj_id="$route.params.id" />
+        <div class="p-4 w-1/2 bg-base-100 text-base-content">
+          <MessageLogs :content="log_content" />
           <!-- <SideBarContent :item-data="more" /> -->
         </div>
       </div>
@@ -74,8 +73,8 @@
         >
         <h3 class="text-lg font-bold">Add Item</h3>
         <ItemForm
-          @close-modal="add_checked = !add_checked"
-          :prj_id="$route.params.id"
+          @close-modal="close_modal"
+          :prj_id="$route.params.id" :parent="item_parent"
         />
       </div>
     </div>
@@ -116,13 +115,14 @@
 <script>
 import { useTrackerStore } from "../stores/tracker_store";
 import { useMoreStore } from "../stores/more_store";
+import { useAddItemStore } from "../stores/add_item_store";
 import { useDebounceStore } from "../stores/debounce_store";
 import { ref } from "vue";
 import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
 import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
-import MessageLogs from "./logs.vue";
+import MessageLogs from "./log_stream.vue";
 import ProjectDetails from "./project_details.vue";
 import {
   CloudArrowUpIcon,
@@ -146,19 +146,21 @@ export default {
   setup() {
     const store = useTrackerStore();
     const more_store = useMoreStore();
+    const addItemStore = useAddItemStore();
     const debounceStore = useDebounceStore();
     return {
       store,
       more_store,
       debounceStore,
+      addItemStore,
     };
   },
   data() {
     return {
-      add_checked: false,
+      checked_item: false,
       project_name: "My Project",
       openInfo: false,
-      load_project_details: false,
+      log_content: '',
     };
   },
   mounted() {
@@ -166,9 +168,32 @@ export default {
     this.get_project();
   },
   methods: {
+    add_item(){
+      this.addItemStore.item = {};
+      this.addItemStore.add = true;
+      //this.checked_item = !this.checked_item;
+      this.add_checked
+    },
+    loadLogs() {
+      const date_now = Date.now();
+      axios({
+        url: "logs/" + this.$route.params.id,
+        baseURL: import.meta.env.VITE_BASEURL,
+      }).then((response) => {
+        console.log(response.data);
+        this.log_content = response.data;
+      });
+    },
+    close_modal(){
+      this.checked_item = !this.checked_item;
+      this.addItemStore.item = {};
+      this.addItemStore.add = false;
+      console.log(this.addItemStore)
+      this.add_checked
+    },
     showNotes() {
       this.checked = true;
-      this.load_project_details = true;
+      this.loadLogs();
     },
     changeInfo() {
       this.openInfo = true;
@@ -206,8 +231,18 @@ export default {
         this.more_store.more = value;
       },
     },
+    add_checked(){
+      if (this.addItemStore.add == true){
+        return true
+      } else {
+        this.checked_item
+      }
+    },
     more() {
       return this.more_store.item;
+    },
+    item_parent(){
+      return this.addItemStore.item._id
     },
   },
 };
@@ -226,13 +261,3 @@ export default {
 }
 </style>
 
-<!--
-      <template #item="{ element }">
-        <div
-          class="card card-compact shadow-xl"
-          :class="{ 'not-draggable': !enabled }"
-        >
-          {{ element.name }}
-        </div>
-      </template>
--->

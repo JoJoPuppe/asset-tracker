@@ -48,7 +48,7 @@
             class="menu dropdown-content p-2 shadow bg-base-100 border border-primary rounded-box w-52 mt-4"
           >
             <li><a @click="get_more(item.element._id)">Details</a></li>
-            <li><a @click="$emit('updateItem', item)">Update Item</a></li>
+            <li><a @click="$emit('updateItem', item)">Edit</a></li>
             <li><a @click="$emit('newVersion', item)">New Version</a></li>
             <li><a @click="check_delete = !check_delete">Delete</a></li>
           </ul>
@@ -104,6 +104,10 @@ import { EllipsisHorizontalIcon, ChartBarIcon } from "@heroicons/vue/24/solid";
 import CollapseTransition from "@ivanv/vue-collapse-transition/src/CollapseTransition.vue";
 import ItemDetails from "./item_details.vue";
 import axios from "axios";
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+
 const props = defineProps(["item"]);
 const emits = defineEmits(["updateItem", "newVersion"]);
 
@@ -112,6 +116,7 @@ const trackerStore = useTrackerStore();
 const isOpen = ref(false);
 const check_delete = ref(false);
 
+const $toast = useToast();
 const item_status = ref(props.item.element.status);
 
 const statusClass = computed(() => ({
@@ -136,6 +141,7 @@ function delete_item(item_id) {
   axios
     ({method: "delete", url: "/itemfile/" + item_id, baseURL: import.meta.env.VITE_BASEURL})
     .then((response) => {
+      let instance = $toast.info('to see changes please refresh the page');
       check_delete.value = !check_delete.value;
     });
 }
