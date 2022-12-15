@@ -53,8 +53,7 @@
       <div class="drawer-side">
         <label for="my-drawer-4" class="drawer-overlay"></label>
         <div class="p-4 w-1/2 bg-base-100 text-base-content">
-          <MessageLogs :content="log_content" />
-          <!-- <SideBarContent :item-data="more" /> -->
+          <SideBarContent :item-data="more" />
         </div>
       </div>
     </div>
@@ -122,7 +121,6 @@ import nestedDraggable from "./nested_drag.vue";
 import ItemForm from "./add_item.vue";
 import FolderForm from "./add_folder.vue";
 import SideBarContent from "./side_bar_content.vue";
-import MessageLogs from "./log_stream.vue";
 import ProjectDetails from "./project_details.vue";
 import {
   CloudArrowUpIcon,
@@ -133,7 +131,6 @@ import axios from "axios";
 
 export default {
   components: {
-    MessageLogs,
     ProjectDetails,
     nestedDraggable,
     ItemForm,
@@ -160,6 +157,7 @@ export default {
       checked_item: false,
       project_name: "My Project",
       openInfo: false,
+      side_notes: false,
       log_content: '',
     };
   },
@@ -181,7 +179,7 @@ export default {
         baseURL: import.meta.env.VITE_BASEURL,
       }).then((response) => {
         console.log(response.data);
-        this.log_content = response.data;
+        this.more_store.cache_item(response.data);
       });
     },
     close_modal(){

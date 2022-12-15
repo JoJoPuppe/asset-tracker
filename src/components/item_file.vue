@@ -158,8 +158,8 @@ function get_more(item_id) {
   axios
     ({url: "/itemfile/v2/" + item_id, baseURL: import.meta.env.VITE_BASEURL})
     .then((response) => {
-      store.cache_item(response.data);
       store.more = true;
+      store.cache_item(response.data);
     });
 }
 </script>
