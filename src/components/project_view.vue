@@ -99,13 +99,8 @@
     />
     <div class="modal">
       <div class="modal-box relative">
-        <label
-          for="info-modal"
-          class="btn btn-sm btn-circle absolute right-2 top-2"
-          >✕</label
-        >
         <h3 class="text-lg font-bold">Project Details</h3>
-        <ProjectDetails :proj_id="$route.params.id" />
+        <ProjectDetails @close-tip-tap-modal="closeTipTipModel" :proj_id="$route.params.id" :item="log_item" :mode="editMode" />
       </div>
     </div>
   </div>
@@ -114,6 +109,7 @@
 <script>
 import { useTrackerStore } from "../stores/tracker_store";
 import { useMoreStore } from "../stores/more_store";
+import { useLogStore } from "../stores/log_store";
 import { useAddItemStore } from "../stores/add_item_store";
 import { useDebounceStore } from "../stores/debounce_store";
 import { ref } from "vue";
@@ -143,11 +139,13 @@ export default {
   setup() {
     const store = useTrackerStore();
     const more_store = useMoreStore();
+    const log_store = useLogStore();
     const addItemStore = useAddItemStore();
     const debounceStore = useDebounceStore();
     return {
       store,
       more_store,
+      log_store,
       debounceStore,
       addItemStore,
     };
@@ -156,9 +154,9 @@ export default {
     return {
       checked_item: false,
       project_name: "My Project",
-      openInfo: false,
       side_notes: false,
       log_content: '',
+      editMode: 'save',
     };
   },
   mounted() {
@@ -166,6 +164,10 @@ export default {
     this.get_project();
   },
   methods: {
+    closeTipTipModel(){
+      this.openInfo = !this.openInfo;
+      this.log_store.item = null;
+    },
     add_item(){
       this.addItemStore.item = {};
       this.addItemStore.add = true;
@@ -195,7 +197,7 @@ export default {
     },
     changeInfo() {
       this.openInfo = true;
-      console.log(this.openInfo);
+      this.editMode = "save"
     },
     get_project() {
       axios({
@@ -229,6 +231,14 @@ export default {
         this.more_store.more = value;
       },
     },
+    openInfo: {
+      get() {
+        return this.log_store.edit;
+      },
+      set(value) {
+        this.log_store.edit = value;
+      },
+    },
     add_checked(){
       if (this.addItemStore.add == true){
         return true
@@ -238,6 +248,10 @@ export default {
     },
     more() {
       return this.more_store.item;
+    },
+    log_item(){
+      this.editMode = 'edit'
+      return this.log_store.log_item;
     },
     item_parent(){
       return this.addItemStore.item._id

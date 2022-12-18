@@ -1,10 +1,9 @@
 <template>
   <ul class="mr-2">
     <li v-for="item in content">
-      <logMessage :message="item.log_message" :creationDate="item.creation_date" :lastUpdate="item.last_update" />
+      <logMessage :item="item" />
     </li>
   </ul>
-
 </template>
 <script>
   import logMessage from "./logs.vue";
@@ -13,6 +12,12 @@
   props: ['content'],
   components: {
     logMessage,
+  },
+  data(){
+    return {
+    }
+  },
+  methods: {
   },
 }
 </script>

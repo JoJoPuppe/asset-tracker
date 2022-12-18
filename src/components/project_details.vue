@@ -21,7 +21,9 @@
   <editor-content class="text-primary" :editor="project_editor" />
   </div>
   <div class="flex justify-end">
-    <button class="btn mt-4" @click="saveLog">save</button>
+    <button class="btn mt-4" @click="$emit('closeTipTapModal')">cancel</button>
+    <button v-if="save_mode" class="btn mt-4" @click="saveLog">save</button>
+    <button v-else class="btn mt-4" @click="updateLog">update</button>
   </div>
 </template>
 
@@ -35,6 +37,7 @@ import RiBold from "vue-remix-icons/icons/RiBold.vue";
 import RiListUnordered from "vue-remix-icons/icons/RiListUnordered.vue";
 import RiDoubleQuotesL from "vue-remix-icons/icons/RiDoubleQuotesL.vue";
 import axios from 'axios';
+import { useLogStore } from "../stores/log_store";
 
 export default {
   components: {
@@ -46,10 +49,18 @@ export default {
     RiH2,
     RiH3,
   },
-  props: ['proj_id'],
+  emits: ['closeTipTapModal'],
+  props: ['proj_id', 'item', 'mode'],
   data() {
     return {
       project_editor: null,
+      save_mode: true,
+    }
+  },
+  setup(){
+    const log_store = useLogStore();
+    return {
+      log_store,
     }
   },
   methods: {
@@ -64,7 +75,36 @@ export default {
           }})
         .then((response) => {
           console.log(response.data)
+          this.log_store.item = null;
         });
+    },
+    updateLog(){
+      const date_now = Date.now();
+      axios
+        ({method: "put", url:"logs/" + this.item._id, baseURL: import.meta.env.VITE_BASEURL, data: {
+          log_message: this.project_editor.getHTML(),
+          last_update: date_now,
+          project_id: this.item.project_id,
+          }})
+        .then((response) => {
+          console.log(response.data)
+          this.log_store.item = null;
+        });
+    }
+  },
+  watch: {
+    mode(val, oldVal){
+      if (val == 'edit') {
+        this.save_mode = false;
+      } else {
+       this.save_mode = true;
+      }
+    },
+    item(val, oldVal){
+      if (this.mode == 'save'){
+        this.project_editor.commands.setContent('')
+      }
+        this.project_editor.commands.setContent(this.item.log_message)
     }
   },
   mounted() {
