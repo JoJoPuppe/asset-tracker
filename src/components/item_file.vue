@@ -6,7 +6,10 @@
           class="py-2 px-1 w-12 h-full border-r-8 text-primary"
           :class="statusClass"
         />
-        <p class="px-2">{{ item.element.name }}</p>
+          <div class="px-2 py-1">
+            <p class="">{{ item.element.name }}</p>
+            <p class="text-xs text-slate-400">last update: {{ item.element.last_update }}</p>
+          </div>
       </div>
       <div class="flex items-center text-slate-600">
         <div class="dropdown dropdown-end">
@@ -35,6 +38,11 @@
             <li>
               <a class="my-1 border-2 border-success" @click="set_status(3)"
                 >Approved</a
+              >
+            </li>
+            <li>
+              <a class="my-1 border-2 border-error" @click="set_status(4)"
+                >Rejected</a
               >
             </li>
           </ul>
@@ -79,6 +87,7 @@
   <div class="modal">
     <div class="modal-box w-9/12 max-w-4xl">
       <h3 class="font-bold text-lg">What do you want to delete?</h3>
+
       <div class="modal-action">
         <button @click="delete_item(item.element._id)" class="btn">
           delete item
@@ -87,6 +96,35 @@
           delete item and versions
         </button>
         <button @click="check_delete = !check_delete" class="btn">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <input
+    type="checkbox"
+    id="reject-modal"
+    class="modal-toggle"
+    v-model="reject_modal"
+  />
+  <div class="modal text-primary">
+    <div class="modal-box w-9/12 max-w-4xl">
+      <h3 class="font-bold text-lg">Add reject reason.</h3>
+      <label class="label">
+        <span class="label-text">Name</span>
+      </label>
+      <input
+        v-model="reject_text"
+        type="text"
+        placeholder="Type here"
+        class="input input-bordered w-full max-w-xs"
+      />
+      <div class="modal-action">
+        <button @click="reject(item.element._id)" class="btn">
+          Reject
+        </button>
+        <button @click="reject_modal = !reject_modal" class="btn">
           Cancel
         </button>
       </div>
@@ -114,12 +152,15 @@ const emits = defineEmits(["updateItem", "newVersion"]);
 const store = useMoreStore();
 const trackerStore = useTrackerStore();
 const isOpen = ref(false);
+const reject_modal = ref(false);
+const reject_text = ref('');
 const check_delete = ref(false);
 
 const $toast = useToast();
 const item_status = ref(props.item.element.status);
 
 const statusClass = computed(() => ({
+  "border-error": item_status.value === 4,
   "border-success": item_status.value === 3,
   "border-warning": item_status.value === 2,
   "border-blue-300": item_status.value === 1,
@@ -127,14 +168,29 @@ const statusClass = computed(() => ({
 }));
 
 function set_status(state) {
-  axios
-    ({method:"put", url: "/itemfile/" + props.item.element._id, baseURL: import.meta.env.VITE_BASEURL, data: {
-      status: state,
-    }})
-    .then((response) => {
-      trackerStore.update_item(response.data);
-      item_status.value = state;
-    });
+  if (state == 4){
+    reject_modal.value = true;
+  } else {
+    axios
+      ({method:"put", url: "/itemfile/" + props.item.element._id, baseURL: import.meta.env.VITE_BASEURL, data: {
+        status: state, reject_text: ''
+      }})
+      .then((response) => {
+        trackerStore.update_item(response.data);
+        item_status.value = state;
+      });
+    }
+}
+
+function reject(){
+    axios
+      ({method:"put", url: "/itemfile/" + props.item.element._id, baseURL: import.meta.env.VITE_BASEURL, data: {
+      status: 4, reject_text: reject_text.value
+      }})
+      .then((response) => {
+        trackerStore.update_item(response.data);
+        item_status.value = 4;
+      });
 }
 
 function delete_item(item_id) {

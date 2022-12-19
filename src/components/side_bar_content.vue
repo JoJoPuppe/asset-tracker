@@ -1,25 +1,28 @@
 <template>
   <MessageLogs v-if="show_logs" :content="itemData" />
+
   <div v-else class="">
     <h2 class="font-bold text-xl my-4">{{ itemData.name }}</h2>
     <div class="divider" />
     <p>{{ itemData.path }}</p>
-    <p>{{ itemData.file_name }}</p>
+    <p>{{ itemData.creation_date }}</p>
+    <p>{{ itemData.last_update }}</p>
     <div class="divider">history</div>
-    <div class="card border border-primary">
-      <p v-for="item in itemData.history">
-      {{ item.name }}
-      </p>
+    <div class="">
+      <div v-for="item in itemData.history">
+        <HistoryItem  :item="item" />
+      </div>
     </div>
-
   </div>
 </template>
 <script>
 import MessageLogs from "./log_stream.vue";
+import HistoryItem from "./history_item.vue";
 
 export default{
   components: {
     MessageLogs,
+    HistoryItem,
   },
   props:['itemData'],
   data(){

@@ -10,15 +10,6 @@
       class="input input-bordered w-full max-w-xs"
     />
     <label class="label">
-      <span class="label-text">File name</span>
-    </label>
-    <input
-      v-model="file_name"
-      type="text"
-      placeholder="Type here"
-      class="input input-bordered w-full max-w-xs"
-    />
-    <label class="label">
       <span class="label-text">Path</span>
     </label>
     <input
@@ -84,8 +75,8 @@ export default {
       path: "/path/to/file",
       operator: "",
       comment: "",
-      file_name: "test_v01.txt",
       file_type: "",
+      link: "",
       history: [],
       requirements: [],
     };
@@ -101,7 +92,7 @@ export default {
     fill_fields() {
       this.item_name = this.item.name;
       this.path = this.item.path;
-      this.file_name = this.item.file_name;
+      this.link = this.item.link;
       this.project_id = this.item.project_id;
       this.file_type = this.item.file_type;
       this.operator = this.item.operator;
@@ -109,12 +100,18 @@ export default {
       this.history = this.item.history;
     },
     addItem() {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+      const date_now = new Date(now.getTime() - offsetMs);
+
       let payload = {
         path: this.path,
         name: this.item_name,
-        file_name: this.file_name,
         status: 0,
+        link: this.link,
         project_id: this.prj_id,
+        creation_date: date_now,
+        last_update: date_now,
         file_type: this.file_type,
         operator: this.operator,
         comment: this.comment,
@@ -140,12 +137,17 @@ export default {
         });
     },
     updateItem() {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+      const date_now = new Date(now.getTime() - offsetMs);
+
       let payload = {
         path: this.path,
         name: this.item_name,
-        file_name: this.file_name,
         status: this.item.status,
+        link: this.link,
         project_id: this.prj_id,
+        last_update: date_now,
         file_type: this.file_type,
         operator: this.operator,
         comment: this.comment,
@@ -165,12 +167,18 @@ export default {
         });
     },
     newVersion() {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+      const date_now = new Date(now.getTime() - offsetMs);
+
       this.history.push(this.item._id);
       let payload = {
         path: this.path,
         version: this.item.version + 1,
         name: this.item_name,
-        file_name: this.file_name,
+        creation_date: date_now,
+        last_update: date_now,
+        link: this.link,
         status: this.item.status,
         project_id: this.item.project_id,
         file_type: this.file_type,
