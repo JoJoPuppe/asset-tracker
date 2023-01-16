@@ -24,6 +24,11 @@
       <button @click="create_project" class="btn btn-accent">
         Create Project
       </button>
+      <router-link to="/projectlist" custom v-slot="{ navigate }">
+        <button @click="navigate" class="btn btn-accent">
+          List Projects
+        </button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -40,8 +45,12 @@ export default {
   },
   methods: {
     create_project() {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+      const date_now = new Date(now.getTime() - offsetMs);
+
       axios
-        ({method:"post", url: "/project", baseURL: import.meta.env.VITE_BASEURL, data:{ name: this.project_name }})
+        ({method:"post", url: "/project", baseURL: import.meta.env.VITE_BASEURL, data:{ name: this.project_name, creation_date: date_now }})
         .then((response) => {
           console.log("project " + this.project_name + " added.");
           console.log(response.data._id);
